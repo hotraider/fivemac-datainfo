@@ -1,0 +1,203 @@
+<html>
+
+<head>
+    <link rel="stylesheet" href="reset.css" type="text/css">
+    <script src="nui://game/ui/jquery.js" type="text/javascript"></script>
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/4.7.0/css/font-awesome.min.css">
+</head>
+
+
+<script>
+    fivemac = {}
+
+    $(function() {
+        function display(bool) {
+            if (bool) {
+                $("#container").show();
+            } else {
+                $("#container").hide();
+            }
+        }
+
+        display(false)
+
+        window.addEventListener('message', function(event) {
+            var item = event.data;
+            if (item.type === "ui") {
+                if (item.status == true) {
+                    display(true)
+                } else {
+                    display(false)
+                }
+            }
+        })
+
+
+        $("#close").click(function() {
+            $.post('http://fivemac-datainfo/exit', JSON.stringify({}));
+            fivemac();
+        })
+
+    })
+
+
+    $(document).ready(function() {
+        $.post('http://fivemac-datainfo/fivemac-datacheck', JSON.stringify({}), function(data) {
+            let css = ""
+            if (data.length > 0) {
+                for (let index = 0; index < data.length; index++) {
+                    const raider = data[index];
+
+                    css = `
+                <div class="text1">Adın: ${raider.firstname}</div>
+
+                <div class="text2">Soyadın: ${raider.lastname}</div>
+
+                <div class="fivemac">Hesap Dökümün</div>
+
+                <div class="text3">${raider.accounts}</div>
+
+                <div class="text4">Doğum Tarihin: ${raider.dateofbirth}</div>
+
+                <div class="text5">Boyun: ${raider.height}</div>
+
+                <div class="text6">Telefon Numaran: ${raider.phone_number}</div>
+
+                <div class="text7">Mesleğin: ${raider.job}</div>
+
+
+                ` + css
+                }
+
+            } else {
+                css = `
+                console.log("Hata oluştu!")
+             ` + css
+            }
+            $("#data").html(css) + $("#text").html(css)
+        });
+    });
+
+
+
+    $(document).ready(function() {
+        $("#btnGizle").click(function() {
+            $("#data").fadeOut();
+        });
+        $("#btnGoster").click(function() {
+            $("#data").fadeIn();
+        });
+    });
+
+
+
+    fivemac = function() {
+        $("#container").fadeOut(175);
+        $.post('http://fivemac-datainfo/exit');
+    }
+
+
+    $(document).on('keydown', function() {
+        switch (event.keyCode) {
+            case 27:
+                fivemac();
+                break;
+        }
+    });
+
+    fivemac = function() {
+        $("#container").fadeOut(175);
+        $.post('http://fivemac-datainfo/exit');
+    }
+</script>
+
+
+
+
+
+<style>
+    .text1 {
+        color: rgb(255, 255, 255);
+        font-size: 50px;
+        text-align: center;
+    }
+    
+    .text2 {
+        color: rgb(255, 255, 255);
+        font-size: 50px;
+        margin-top: 10px;
+        text-align: center;
+    }
+    
+    .text3 {
+        color: rgb(255, 255, 255);
+        font-size: 18px;
+        margin-top: 30px;
+        text-align: center;
+    }
+    
+    .text4 {
+        color: rgb(255, 255, 255);
+        font-size: 20px;
+        margin-top: 20px;
+        text-align: center;
+    }
+    
+    .text5 {
+        color: rgb(255, 255, 255);
+        font-size: 20px;
+        margin-top: 20px;
+        text-align: center;
+    }
+    
+    .text6 {
+        color: rgb(255, 255, 255);
+        font-size: 20px;
+        margin-top: 20px;
+        text-align: center;
+    }
+    
+    .text7 {
+        color: rgb(255, 255, 255);
+        font-size: 20px;
+        margin-top: 20px;
+        text-align: center;
+    }
+    
+     ::-webkit-scrollbar {
+        display: none;
+        visibility: hidden;
+        opacity: 0
+    }
+    
+    #container {
+        background-color: rgba(0, 0, 0, 0.459);
+        height: 400px;
+        width: 400px;
+        margin-top: 150px;
+        /* border-radius: 100px; */
+    }
+    
+    .fivemac {
+        font-size: 20px;
+        margin-top: 10px;
+        text-align: center;
+        color: turquoise;
+    }
+    
+    .foklar {
+        font-size: 40px;
+        margin-top: 20px;
+        text-align: center;
+        color: violet;
+    }
+</style>
+
+<body>
+    <div id="container">
+        <i id="data"></i>
+        <div class="foklar" id="close">KAPAT</div>
+    </div>
+</body>
+
+</html>
